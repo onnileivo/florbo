@@ -36,6 +36,11 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build
 
+    - name: upload jar
+      uses: actions/upload-artifact@v3
+      with: 
+        name: binary
+        path: versions/1.8.9-forge/build/libs/florbo-1.8.9-forge-0.1.jar
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
@@ -63,10 +68,6 @@ jobs:
 
     # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
-    #- name: Generate and submit dependency graph
-     # uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
-    - name: upload jar
-      uses: actions/upload-artifact@v3
-      with: 
-        name: binary
-        path: versions/1.8.9-forge/build/libs/florbo-1.8.9-forge-0.1.jar
+    - name: Generate and submit dependency graph
+      uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+    
