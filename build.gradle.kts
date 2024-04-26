@@ -15,6 +15,7 @@ plugins {
     id("net.kyori.blossom") version "1.3.1"
     id("signing")
     java
+    idea
 }
 
 // Gets the mod name, version and id from the `gradle.properties` file.
@@ -79,7 +80,6 @@ val shade: Configuration by configurations.creating {
 val modShade: Configuration by configurations.creating {
     configurations.modImplementation.get().extendsFrom(this)
 }
-
 // Configures the output directory for when building from the `src/resources` directory.
 sourceSets {
     main {
@@ -90,10 +90,12 @@ sourceSets {
 // Adds the Polyfrost maven repository so that we can get the libraries necessary to develop the mod.
 repositories {
     maven("https://repo.polyfrost.org/releases")
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
 // Configures the libraries/dependencies for your mod.
 dependencies {
+
     // Adds the OneConfig library, so we can develop with it.
     modCompileOnly("cc.polyfrost:oneconfig-$platform:0.2.2-alpha+")
 
@@ -105,6 +107,7 @@ dependencies {
         shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
     }
 }
+
 
 tasks {
     // Processes the `src/resources/mcmod.info or fabric.mod.json` and replaces

@@ -1,20 +1,21 @@
 package dev.florbo.hud;
 
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
-import dev.florbo.config.TestConfig;
+import dev.florbo.config.FlorboConfig;
 
 /**
  * An example OneConfig HUD that is started in the config and displays text.
  *
- * @see TestConfig#hud
+ * @see FlorboConfig#hud
  */
 public class TestHud extends SingleTextHud {
     public TestHud() {
-        super("Test", true);
+        super("Test", false);
     }
 
     @Override
     public String getText(boolean example) {
-        return "I'm an example HUD";
+        long l = System.currentTimeMillis();
+        return "The time is " + Long.toString(l);
     }
 }

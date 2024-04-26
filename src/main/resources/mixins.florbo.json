@@ -2,12 +2,14 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7",
   "package": "dev.florbo.mixin",
-  "refmap": "mixins.examplemod.refmap.json",
+  "refmap": "mixins.florbo.refmap.json",
   "injectors": {
     "maxShiftBy": 5
   },
   "client": [
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "AccessorRenderManager",
+    "NetworkManagerMixin"
   ],
   "verbose": true
 }
