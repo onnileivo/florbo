@@ -8,8 +8,6 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.awt.*;
-
-
 public class ChestEsp {
     public Minecraft mc = Minecraft.getMinecraft();
     public static BlockRenderer blockRenderer = new BlockRenderer();

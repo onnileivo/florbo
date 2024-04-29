@@ -35,28 +35,18 @@ public class MobEsp {
     public static Minecraft mc = Minecraft.getMinecraft();
     @SubscribeEvent
     public void onRenderLivingpre(RenderLivingEvent.Pre<?> event) {
-        if (!FlorboConfig.mobEsp) return;
+        // FUCKED
+
+        /*if (!FlorboConfig.mobEsp) return;
         if (event.entity != mc.thePlayer && event.entity instanceof EntityLivingBase) {
             String name = event.entity.getName();
             if (name.startsWith("§6✯") && name.endsWith("§c❤") && event.entity.hasCustomName() && event.entity.getAlwaysRenderNameTag()) {
                 System.out.println("YO GUYS WE FOUND THAT THAANG BRUHb " + name);
-
                 System.out.println(event.entity.posX);
                 System.out.println(event.entity.posY);
                 System.out.println(event.entity.posZ);
                 RenderUtil.entityESPBox(event.entity, ((MinecraftMixin) mc).getTimer().renderPartialTicks, FlorboConfig.getMobEspColor());
             }
-        }
+        }*/
     }
-    // skytils yoink
-    public static Double getRenderX() {
-        return ((AccessorRenderManager)mc).getRenderX();
-    }
-    public static Double getRenderY() {
-        return ((AccessorRenderManager)mc).getRenderY();
-    }
-    public static Double getRenderZ() {
-        return ((AccessorRenderManager)mc).getRenderZ();
-    }
-
 }

@@ -42,8 +42,7 @@ public class AutoBreak {
         boolean keyDown = Keyboard.isKeyDown(Keyboard.KEY_DOWN);
         boolean keyLeft = Keyboard.isKeyDown(Keyboard.KEY_LEFT);
         boolean keyRight = Keyboard.isKeyDown(Keyboard.KEY_RIGHT);
-
-
+        
         if (shouldBreak && !(keyUp || keyDown || keyLeft || keyRight)) {
             resetKeys();
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), false);
