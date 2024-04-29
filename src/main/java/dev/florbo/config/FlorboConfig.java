@@ -4,7 +4,6 @@ package dev.florbo.config;
 import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.core.OneKeyBind;
 import dev.florbo.FlorboMod;
-import dev.florbo.hud.TestHud;
 import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
@@ -12,7 +11,6 @@ import cc.polyfrost.oneconfig.config.data.OptionSize;
 import dev.florbo.util.KeyboardUtils;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.awt.Color;
 
 /**
@@ -57,28 +55,45 @@ public class FlorboConfig extends Config {
             subcategory = "Farming"
     )
     public static boolean autoBreak = true;
+
     @KeyBind(
-            name = "Mouse ungrab shit"
+            name = "Mouse ungrab",
+            category = "QOL",
+            subcategory = "Misc"
     )
-    public static OneKeyBind keyBind = new OneKeyBind(Keyboard.KEY_O);
+    public static OneKeyBind unGrabKeybind = new OneKeyBind(Keyboard.KEY_O);
 
-
+    @KeyBind(
+            name = "autobreak keybind",
+            category = "QOL",
+            subcategory = "Farming"
+    )
+    public static OneKeyBind autoBreakKeybind = new OneKeyBind(Keyboard.KEY_P);
+    // getters
     public static Color getChestEspColor() {
-        if (chestEspColor == 0) return Color.RED;
-        if (chestEspColor == 1) return Color.BLUE;
-        if (chestEspColor == 2) return Color.MAGENTA;
-        return Color.RED;
+        switch (chestEspColor) {
+            case 1: return Color.BLUE;
+            case 2: return Color.MAGENTA;
+            default: return Color.RED;
+            // if undefined red
+            // or if case 0 (RED)
+        }
     }
     public static Color getMobEspColor() {
-        if (mobEspColor == 0) return Color.RED;
-        if (mobEspColor == 1) return Color.BLUE;
-        if (mobEspColor == 2) return Color.MAGENTA;
-        return Color.RED;
+        switch (mobEspColor) {
+            case 1: return Color.BLUE;
+            case 2: return Color.MAGENTA;
+            default: return Color.RED;
+            // if undefined red
+            // or if case 0 (RED)
+        }
     }
+    public void toggleAutoBreak() {autoBreak = !autoBreak;}
     public FlorboConfig() {
         super(new Mod(FlorboMod.NAME, ModType.HYPIXEL, "/florbo/assets/icon.png"), FlorboMod.MODID + ".json");
         initialize();
-        registerKeyBind(keyBind, KeyboardUtils::toggleGrab);
+        registerKeyBind(unGrabKeybind, KeyboardUtils::toggleGrab);
+        registerKeyBind(autoBreakKeybind, this::toggleAutoBreak);
     }
 }
 
