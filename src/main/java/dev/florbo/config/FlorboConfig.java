@@ -1,18 +1,19 @@
 package dev.florbo.config;
 
 
+import cc.polyfrost.oneconfig.config.annotations.*;
+import cc.polyfrost.oneconfig.config.core.OneKeyBind;
 import dev.florbo.FlorboMod;
 import dev.florbo.hud.TestHud;
 import cc.polyfrost.oneconfig.config.Config;
-import cc.polyfrost.oneconfig.config.annotations.Dropdown;
-import cc.polyfrost.oneconfig.config.annotations.HUD;
-import cc.polyfrost.oneconfig.config.annotations.Slider;
-import cc.polyfrost.oneconfig.config.annotations.Switch;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.OptionSize;
+import dev.florbo.util.KeyboardUtils;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
+import java.awt.Color;
 
 /**
  * The main Config entrypoint that extends the Config type and inits the config options.
@@ -56,6 +57,10 @@ public class FlorboConfig extends Config {
             subcategory = "Farming"
     )
     public static boolean autoBreak = true;
+    @KeyBind(
+            name = "Mouse ungrab shit"
+    )
+    public static OneKeyBind keyBind = new OneKeyBind(Keyboard.KEY_O);
 
 
     public static Color getChestEspColor() {
@@ -73,6 +78,7 @@ public class FlorboConfig extends Config {
     public FlorboConfig() {
         super(new Mod(FlorboMod.NAME, ModType.HYPIXEL, "/florbo/assets/icon.png"), FlorboMod.MODID + ".json");
         initialize();
+        registerKeyBind(keyBind, KeyboardUtils::toggleGrab);
     }
 }
 

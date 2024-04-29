@@ -25,7 +25,8 @@ public class AutoBreak {
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (FlorboConfig.autoBreak && shouldBreak) {
-            KeyBinding.onTick(mc.gameSettings.keyBindAttack.getKeyCode());
+            resetKeys();
+            KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), true);
             KeyBinding.setKeyBindState(shouldBePressed.getKeyCode(), true);
         }
     }
@@ -42,11 +43,12 @@ public class AutoBreak {
         boolean keyLeft = Keyboard.isKeyDown(Keyboard.KEY_LEFT);
         boolean keyRight = Keyboard.isKeyDown(Keyboard.KEY_RIGHT);
 
+
         if (shouldBreak && !(keyUp || keyDown || keyLeft || keyRight)) {
             resetKeys();
+            KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), false);
         }
         shouldBreak = keyUp || keyDown || keyLeft || keyRight;
-
         if (keyUp) {
             shouldBePressed = forward;
         } else if (keyLeft) {
