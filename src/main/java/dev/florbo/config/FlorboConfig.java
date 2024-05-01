@@ -54,7 +54,7 @@ public class FlorboConfig extends Config {
             description = "breaks blocks and moves with the arrowkeys",
             size = OptionSize.DUAL,
             category = "QOL",
-            subcategory = "Farming"
+            subcategory = "OldAutoBreak"
     )
     public static boolean autoBreak = true;
 
@@ -68,7 +68,7 @@ public class FlorboConfig extends Config {
     @KeyBind(
             name = "autobreak keybind",
             category = "QOL",
-            subcategory = "Farming"
+            subcategory = "OldAutoBreak"
     )
     public static OneKeyBind autoBreakKeybind = new OneKeyBind(Keyboard.KEY_P);
 
@@ -83,7 +83,7 @@ public class FlorboConfig extends Config {
             name = "left autobreak toggle",
             description = "tap it once to toggle going to the direction and break block th9ingy",
             category = "QOL",
-            subcategory = "Farming"
+            subcategory = "ToggleAutoBreak"
     )
     public static OneKeyBind toggleAutoBreakLeft = new OneKeyBind(Keyboard.KEY_N);
 
@@ -91,7 +91,7 @@ public class FlorboConfig extends Config {
             name = "right autobreak toggle",
             description = "tap it once to toggle going to the direction and break block th9ingy",
             category = "QOL",
-            subcategory = "Farming"
+            subcategory = "ToggleAutoBreak"
     )
     public static OneKeyBind toggleAutoBreakRight = new OneKeyBind(Keyboard.KEY_M);
 
