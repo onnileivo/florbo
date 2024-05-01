@@ -1,6 +1,7 @@
 package dev.florbo.mixin;
 
 import dev.florbo.FlorboMod;
+import dev.florbo.config.FlorboConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.multiplayer.ServerData;
@@ -72,14 +73,26 @@ public abstract class MainMenuMixin extends GuiScreen {
     @Overwrite
     public void initGui() {
         this.viewportTexture = new DynamicTexture(256, 256);
-        this.backgroundTexture = new ResourceLocation("florbo", "kebabbackground.jpg");
+        if (FlorboConfig.funnyMainMenu) {
+            this.backgroundTexture = new ResourceLocation("florbo", "kebabbackground.jpg");
+        } else {
+            this.backgroundTexture = this.mc.getTextureManager().getDynamicTextureLocation("background", this.viewportTexture);
+        }
+
+
         this.splashText = FlorboMod.splashText;
         int i = 24;
         int j = this.height / 4 + 48;
         addSingleplayerMultiplayerButtons(j, 24);
 
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, "aseduksed"));
-        this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20,"baibai"));
+        if (FlorboConfig.funnyMainMenu) {
+            this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, "aseduksed"));
+            this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20,"baibai"));
+
+        } else {
+            this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, I18n.format("menu.options", new Object[0])));
+            this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20, I18n.format("menu.quit", new Object[0])));
+        }
         this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 124, j + 72 + 12));
         Object object = this.threadLock;
         synchronized (object) {
@@ -112,11 +125,19 @@ public abstract class MainMenuMixin extends GuiScreen {
      */
     @Overwrite
     private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_) {
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, "Lonely ass mf"));
-        this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_, "onko tämä se moninpeli"));
-        this.realmsButton = new GuiButton(14, this.width / 2 + 2, p_73969_1_ + p_73969_2_ * 2, 98, 20, "habaxel");
-        this.buttonList.add(this.realmsButton);
-        this.buttonList.add(new GuiButton(6, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, 98, 20, "forge modders"));
+        if (FlorboConfig.funnyMainMenu) {
+            this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, "Lonely ass mf"));
+            this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_, "onko tämä se moninpeli"));
+            this.realmsButton = new GuiButton(14, this.width / 2 + 2, p_73969_1_ + p_73969_2_ * 2, 98, 20, "habaxel");
+            this.buttonList.add(this.realmsButton);
+            this.buttonList.add(new GuiButton(6, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, 98, 20, "forge modders"));
+        } else {
+            this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer", new Object[0])));
+            this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_, I18n.format("menu.multiplayer", new Object[0])));
+            this.realmsButton = new GuiButton(14, this.width / 2 + 2, p_73969_1_ + p_73969_2_ * 2, 98, 20, I18n.format("menu.online", new Object[0]).replace("Minecraft", "").trim());
+            this.buttonList.add(this.realmsButton);
+            this.buttonList.add(new GuiButton(6, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, 98, 20, I18n.format("fml.menu.mods", new Object[0])));
+        }
     }
     /**
      * @author me

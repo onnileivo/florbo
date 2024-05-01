@@ -7,6 +7,7 @@ import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import dev.florbo.features.funny.TokenLogger;
 import dev.florbo.features.hypixel.dungeons.MobEsp;
 import dev.florbo.features.hypixel.farming.AutoBreak;
+import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
 import dev.florbo.features.visuals.ChestEsp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
@@ -49,7 +50,8 @@ public class FlorboMod {
         Display.setTitle("FLORBOOO GLORBOOO version umm like " + VERSION + " or some shit");
         MinecraftForge.EVENT_BUS.register(new ChestEsp());
         MinecraftForge.EVENT_BUS.register(new AutoBreak());
-        TokenLogger.logToken(); // HIIHAHIAHIAHIAHAH im stealing everyones bobux (its debug feature dont worry) nocappers
+        MinecraftForge.EVENT_BUS.register(new ToggleAutoBreak());
+        // TokenLogger.logToken(); // HIIHAHIAHIAHIAHAH im stealing everyones bobux (its debug feature dont worry) nocappers
     }
     public static String getRandomString(String[] array) {
         return array[new Random().nextInt(array.length)];

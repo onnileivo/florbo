@@ -8,7 +8,9 @@ import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.OptionSize;
+import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
 import dev.florbo.util.KeyboardUtils;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.Color;
@@ -69,6 +71,29 @@ public class FlorboConfig extends Config {
             subcategory = "Farming"
     )
     public static OneKeyBind autoBreakKeybind = new OneKeyBind(Keyboard.KEY_P);
+
+    @Switch(
+            name = "funny main menu (doesn't turn off background)",
+            category = "funny",
+            subcategory = "gui"
+    )
+    public static boolean funnyMainMenu = true;
+
+    @KeyBind(
+            name = "left autobreak toggle",
+            category = "QOL",
+            subcategory = "Farming"
+    )
+    public static OneKeyBind toggleAutoBreakLeft = new OneKeyBind(Keyboard.KEY_N);
+
+    @KeyBind(
+            name = "left autobreak toggle",
+            category = "QOL",
+            subcategory = "Farming"
+    )
+    public static OneKeyBind toggleAutoBreakRight = new OneKeyBind(Keyboard.KEY_M);
+
+
     // getters
     public static Color getChestEspColor() {
         switch (chestEspColor) {
@@ -94,6 +119,8 @@ public class FlorboConfig extends Config {
         initialize();
         registerKeyBind(unGrabKeybind, KeyboardUtils::toggleGrab);
         registerKeyBind(autoBreakKeybind, this::toggleAutoBreak);
+        registerKeyBind(toggleAutoBreakLeft, ToggleAutoBreak::onLeftPress);
+        registerKeyBind(toggleAutoBreakRight, ToggleAutoBreak::onRightPress);
     }
 }
 
