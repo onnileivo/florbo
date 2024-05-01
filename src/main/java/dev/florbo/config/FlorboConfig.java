@@ -81,13 +81,15 @@ public class FlorboConfig extends Config {
 
     @KeyBind(
             name = "left autobreak toggle",
+            description = "tap it once to toggle going to the direction and break block th9ingy",
             category = "QOL",
             subcategory = "Farming"
     )
     public static OneKeyBind toggleAutoBreakLeft = new OneKeyBind(Keyboard.KEY_N);
 
     @KeyBind(
-            name = "left autobreak toggle",
+            name = "right autobreak toggle",
+            description = "tap it once to toggle going to the direction and break block th9ingy",
             category = "QOL",
             subcategory = "Farming"
     )
