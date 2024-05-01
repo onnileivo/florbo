@@ -31,11 +31,16 @@ public class ToggleAutoBreak {
 
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) {
+        if (Minecraft.getMinecraft().currentScreen != null) {
+            resetKeys();
+            currentState = breakState.NONE;
+        }
         if ((oldCurrentState == breakState.NONE) && (currentState != breakState.NONE)) {
             KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode(), true);
         }
         if ((currentState == breakState.NONE) && (oldCurrentState != breakState.NONE)) {
             KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode(), false);
+            oldCurrentState = currentState;
         }
         if (oldCurrentState != currentState) {
             switch (currentState) {

@@ -24,6 +24,11 @@ public class AutoBreak {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (mc.currentScreen != null) {
+            resetKeys();
+            KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), false);
+            return;
+        }
         if (FlorboConfig.autoBreak && shouldBreak) {
             resetKeys();
             KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), true);
