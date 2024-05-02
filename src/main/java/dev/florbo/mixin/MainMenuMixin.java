@@ -1,5 +1,6 @@
 package dev.florbo.mixin;
 
+import com.google.common.collect.Lists;
 import dev.florbo.FlorboMod;
 import dev.florbo.config.FlorboConfig;
 import net.minecraft.client.Minecraft;
@@ -15,20 +16,18 @@ import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.GuiModList;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.apache.commons.io.Charsets;
+import org.spongepowered.asm.mixin.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.util.*;
+
 @Mixin(GuiMainMenu.class)
 public abstract class MainMenuMixin extends GuiScreen {
+    @Unique
+    private static final Random florbo$RANDOM = new Random();
     // bruh theres got to be a better way to do this
     @Shadow
     private GuiScreen field_183503_M;
@@ -38,6 +37,9 @@ public abstract class MainMenuMixin extends GuiScreen {
     private GuiButton realmsButton;
     @Shadow
     private String splashText;
+    @Final
+    @Shadow
+    private static ResourceLocation splashTexts;
     @Shadow
     private static ResourceLocation minecraftTitleTextures = new ResourceLocation(FlorboMod.MODID, "/minecraftmenutitle.png");
     @Shadow
@@ -72,6 +74,32 @@ public abstract class MainMenuMixin extends GuiScreen {
      */
     @Overwrite
     public void initGui() {
+        this.splashText = FlorboMod.splashText;
+        if (!FlorboConfig.funnyMainMenu) {
+            minecraftTitleTextures = new ResourceLocation("textures/gui/title/minecraft.png");
+            BufferedReader bufferedreader = null;
+            try {
+                String s;
+                ArrayList<String> list = Lists.newArrayList();
+                bufferedreader = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(splashTexts).getInputStream(), Charsets.UTF_8));
+                while ((s = bufferedreader.readLine()) != null) {
+                    if ((s = s.trim()).isEmpty()) continue;
+                    list.add(s);
+                }
+                if (!list.isEmpty()) {
+                    do {
+                        this.splashText = (String)list.get(florbo$RANDOM.nextInt(list.size()));
+                    } while (this.splashText.hashCode() == 125780783);
+                }
+            } catch (IOException ignored) {
+            } finally {
+                if (bufferedreader != null) {
+                    try {
+                        bufferedreader.close();
+                    } catch (IOException ignored) {}
+                }
+            }
+        }
         this.viewportTexture = new DynamicTexture(256, 256);
         if (FlorboConfig.funnyMainMenu) {
             this.backgroundTexture = new ResourceLocation("florbo", "kebabbackground.jpg");
@@ -80,7 +108,7 @@ public abstract class MainMenuMixin extends GuiScreen {
         }
 
 
-        this.splashText = FlorboMod.splashText;
+
         int i = 24;
         int j = this.height / 4 + 48;
         addSingleplayerMultiplayerButtons(j, 24);

@@ -9,6 +9,7 @@ import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.OptionSize;
 import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
+import dev.florbo.hud.CounterHud;
 import dev.florbo.util.KeyboardUtils;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
@@ -73,7 +74,7 @@ public class FlorboConfig extends Config {
     public static OneKeyBind autoBreakKeybind = new OneKeyBind(Keyboard.KEY_P);
 
     @Switch(
-            name = "funny main menu (doesn't turn off background)",
+            name = "funny main menu",
             category = "funny",
             subcategory = "gui"
     )
@@ -94,6 +95,36 @@ public class FlorboConfig extends Config {
             subcategory = "ToggleAutoBreak"
     )
     public static OneKeyBind toggleAutoBreakRight = new OneKeyBind(Keyboard.KEY_M);
+
+    @HUD(
+            name = "Counter hud",
+            category = "Misc",
+            subcategory = "Counter"
+    )
+    public CounterHud counterHud = new CounterHud();
+
+    @KeyBind(
+            name = "Decrement counter",
+            category = "Misc",
+            subcategory = "Counter"
+    )
+    public OneKeyBind decrementCounterBind = new OneKeyBind(Keyboard.KEY_K);
+
+    @KeyBind(
+            name = "Increment counter",
+            category = "Misc",
+            subcategory = "Counter"
+    )
+    public OneKeyBind incrementCounterBind = new OneKeyBind(Keyboard.KEY_L);
+
+    @KeyBind(
+            name = "Reset counter",
+            category = "Misc",
+            subcategory = "Counter"
+    )
+    public OneKeyBind resetCounterBind = new OneKeyBind(Keyboard.KEY_J);
+
+
 
 
     // getters
@@ -123,6 +154,9 @@ public class FlorboConfig extends Config {
         registerKeyBind(autoBreakKeybind, this::toggleAutoBreak);
         registerKeyBind(toggleAutoBreakLeft, ToggleAutoBreak::onLeftPress);
         registerKeyBind(toggleAutoBreakRight, ToggleAutoBreak::onRightPress);
+        registerKeyBind(resetCounterBind, counterHud::resetCounter);
+        registerKeyBind(incrementCounterBind, counterHud::incrementCounter);
+        registerKeyBind(decrementCounterBind, counterHud::decrementCounter);
     }
 }
 
