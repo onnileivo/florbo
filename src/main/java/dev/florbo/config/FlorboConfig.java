@@ -11,7 +11,6 @@ import cc.polyfrost.oneconfig.config.data.OptionSize;
 import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
 import dev.florbo.hud.CounterHud;
 import dev.florbo.util.KeyboardUtils;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.Color;
