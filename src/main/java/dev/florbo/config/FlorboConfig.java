@@ -10,6 +10,7 @@ import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.OptionSize;
 import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
 import dev.florbo.hud.CounterHud;
+import dev.florbo.hud.TimerHud;
 import dev.florbo.util.KeyboardUtils;
 import org.lwjgl.input.Keyboard;
 
@@ -125,6 +126,26 @@ public class FlorboConfig extends Config {
 
 
 
+    @HUD(
+            name = "timer hud",
+            category = "Misc",
+            subcategory = "Timer"
+    )
+    public TimerHud timerHud = new TimerHud();
+
+    @KeyBind(
+            name = "pause / resume timer",
+            category = "Misc",
+            subcategory = "Timer"
+    )
+    public OneKeyBind pauseOrResumeTimerBind = new OneKeyBind(Keyboard.KEY_H);
+
+    @KeyBind(
+            name = "reset timer",
+            category = "Misc",
+            subcategory = "Timer"
+    )
+    public OneKeyBind resetTimerBind = new OneKeyBind(Keyboard.KEY_G);
 
     // getters
     public static Color getChestEspColor() {
@@ -156,6 +177,8 @@ public class FlorboConfig extends Config {
         registerKeyBind(resetCounterBind, counterHud::resetCounter);
         registerKeyBind(incrementCounterBind, counterHud::incrementCounter);
         registerKeyBind(decrementCounterBind, counterHud::decrementCounter);
+        registerKeyBind(pauseOrResumeTimerBind, timerHud::pauseResumeTimer);
+        registerKeyBind(resetTimerBind, timerHud::reset);
     }
 }
 
