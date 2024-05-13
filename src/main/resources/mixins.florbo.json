@@ -7,10 +7,10 @@
     "maxShiftBy": 5
   },
   "client": [
-    "MinecraftMixin",
     "AccessorRenderManager",
-    "NetworkManagerMixin",
-    "MainMenuMixin"
+    "MainMenuMixin",
+    "MinecraftMixin",
+    "NetworkManagerMixin"
   ],
   "verbose": true
 }

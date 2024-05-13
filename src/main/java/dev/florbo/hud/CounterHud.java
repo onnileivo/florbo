@@ -1,10 +1,7 @@
 package dev.florbo.hud;
 
-import cc.polyfrost.oneconfig.config.annotations.KeyBind;
 import cc.polyfrost.oneconfig.config.annotations.Switch;
-import cc.polyfrost.oneconfig.config.core.OneKeyBind;
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
-import org.lwjgl.input.Keyboard;
 
 public class CounterHud extends SingleTextHud {
     public static int count = 0;
@@ -17,6 +14,7 @@ public class CounterHud extends SingleTextHud {
     public boolean dontshowif0 = true;
     public CounterHud() {
         super("", true);
+        resetCounter();
     }
 
     @Override

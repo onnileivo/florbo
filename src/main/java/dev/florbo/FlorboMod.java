@@ -4,6 +4,7 @@ package dev.florbo;
 import dev.florbo.command.FlorboCommand;
 import dev.florbo.config.FlorboConfig;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
+import dev.florbo.features.hypixel.dungeons.MobEsp;
 import dev.florbo.features.hypixel.farming.AutoBreak;
 import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
 import dev.florbo.features.visuals.ChestEsp;
@@ -44,6 +45,7 @@ public class FlorboMod {
         MinecraftForge.EVENT_BUS.register(new ChestEsp());
         MinecraftForge.EVENT_BUS.register(new AutoBreak());
         MinecraftForge.EVENT_BUS.register(new ToggleAutoBreak());
+        MinecraftForge.EVENT_BUS.register(new MobEsp());
     }
     public static String getRandomString(String[] array) {
         return array[new Random().nextInt(array.length)];

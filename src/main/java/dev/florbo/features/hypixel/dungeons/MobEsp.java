@@ -3,50 +3,131 @@ package dev.florbo.features.hypixel.dungeons;
 import dev.florbo.config.FlorboConfig;
 import dev.florbo.mixin.AccessorRenderManager;
 import dev.florbo.mixin.MinecraftMixin;
-import dev.florbo.util.BlockRenderer;
-import dev.florbo.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.lang3.tuple.MutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.glListBase;
+import static org.lwjgl.opengl.GL11.*;
 
 public class MobEsp {
     public static Minecraft mc = Minecraft.getMinecraft();
-    @SubscribeEvent
-    public void onRenderLivingpre(RenderLivingEvent.Pre<?> event) {
-        // FUCKED
 
-        /*if (!FlorboConfig.mobEsp) return;
-        if (event.entity != mc.thePlayer && event.entity instanceof EntityLivingBase) {
-            String name = event.entity.getName();
-            if (name.startsWith("§6✯") && name.endsWith("§c❤") && event.entity.hasCustomName() && event.entity.getAlwaysRenderNameTag()) {
-                System.out.println("YO GUYS WE FOUND THAT THAANG BRUHb " + name);
-                System.out.println(event.entity.posX);
-                System.out.println(event.entity.posY);
-                System.out.println(event.entity.posZ);
-                RenderUtil.entityESPBox(event.entity, ((MinecraftMixin) mc).getTimer().renderPartialTicks, FlorboConfig.getMobEspColor());
+    private static final AxisAlignedBB MOB_BOX =
+            new AxisAlignedBB(-0.5, 0, -0.5, 0.5, 1, 0.5);
+
+
+    @SubscribeEvent
+    public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
+        if (FlorboConfig.mobEsp) {
+
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glEnable(GL11.GL_LINE_SMOOTH);
+            GL11.glLineWidth(2);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+            GL11.glPushMatrix();
+            GL11.glTranslated(-getRenderX(),
+                    -getRenderY(),
+                    -getRenderZ());
+
+            for (Entity e : mc.theWorld.loadedEntityList) {
+                if (e == mc.thePlayer) {continue;}
+                if (e instanceof EntityArmorStand && e.hasCustomName() && e.getAlwaysRenderNameTag()) {
+                    if (e.getName().startsWith("§6✯ ") && e.getName().endsWith("§c❤")) {
+                        double partialTicks = ((MinecraftMixin) mc).getTimer().renderPartialTicks;
+                        GL11.glPushMatrix();
+                        float r = (float) FlorboConfig.mobEspColor.getRed() / 255;
+                        float g = (float) FlorboConfig.mobEspColor.getGreen() / 255;
+                        float b = (float) FlorboConfig.mobEspColor.getBlue() / 255;
+                        float a = (float) FlorboConfig.mobEspColor.getAlpha() / 255;
+
+                        GL11.glColor4f(r, g, b, a);
+
+                        GL11.glTranslated(
+                                e.prevPosX
+                                        + (e.posX - e.prevPosX) * partialTicks,
+                                e.prevPosY
+                                        + (e.posY - e.prevPosY) * partialTicks,
+                                e.prevPosZ
+                                        + (e.posZ - e.prevPosZ) * partialTicks);
+
+                        double boxWidth = e.width + 0.5;
+                        double boxHeight = e.height + 0.1;
+                        GL11.glScaled(boxWidth, boxHeight, boxWidth);
+
+                        drawOutlinedBox(MOB_BOX);
+
+                        GL11.glPopMatrix();
+                    }
+                }
             }
-        }*/
+            GL11.glPopMatrix();
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        }
     }
+    public double getRenderX() {
+        return ((AccessorRenderManager) mc.getRenderManager()).getRenderX();
+    }
+
+    public double getRenderY() {
+        return ((AccessorRenderManager) mc.getRenderManager()).getRenderY();
+    }
+
+    public double getRenderZ() {
+        return ((AccessorRenderManager) mc.getRenderManager()).getRenderZ();
+    }
+
+    public static void drawOutlinedBox(AxisAlignedBB bb)
+    {
+        glBegin(GL_LINES);
+        {
+            glVertex3d(bb.minX, bb.minY, bb.minZ);
+            glVertex3d(bb.maxX, bb.minY, bb.minZ);
+
+            glVertex3d(bb.maxX, bb.minY, bb.minZ);
+            glVertex3d(bb.maxX, bb.minY, bb.maxZ);
+
+            glVertex3d(bb.maxX, bb.minY, bb.maxZ);
+            glVertex3d(bb.minX, bb.minY, bb.maxZ);
+
+            glVertex3d(bb.minX, bb.minY, bb.maxZ);
+            glVertex3d(bb.minX, bb.minY, bb.minZ);
+
+            glVertex3d(bb.minX, bb.minY, bb.minZ);
+            glVertex3d(bb.minX, bb.maxY, bb.minZ);
+
+            glVertex3d(bb.maxX, bb.minY, bb.minZ);
+            glVertex3d(bb.maxX, bb.maxY, bb.minZ);
+
+            glVertex3d(bb.maxX, bb.minY, bb.maxZ);
+            glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
+
+            glVertex3d(bb.minX, bb.minY, bb.maxZ);
+            glVertex3d(bb.minX, bb.maxY, bb.maxZ);
+
+            glVertex3d(bb.minX, bb.maxY, bb.minZ);
+            glVertex3d(bb.maxX, bb.maxY, bb.minZ);
+
+            glVertex3d(bb.maxX, bb.maxY, bb.minZ);
+            glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
+
+            glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
+            glVertex3d(bb.minX, bb.maxY, bb.maxZ);
+
+            glVertex3d(bb.minX, bb.maxY, bb.maxZ);
+            glVertex3d(bb.minX, bb.maxY, bb.minZ);
+        }
+        glEnd();
+    }
+
+
 }

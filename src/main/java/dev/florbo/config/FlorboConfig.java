@@ -2,6 +2,7 @@ package dev.florbo.config;
 
 
 import cc.polyfrost.oneconfig.config.annotations.*;
+import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.config.core.OneKeyBind;
 import dev.florbo.FlorboMod;
 import cc.polyfrost.oneconfig.config.Config;
@@ -36,19 +37,18 @@ public class FlorboConfig extends Config {
     )
     public static int chestEspColor = 0;
     @Switch(
-            name = "MOB ESP VAMOS",
+            name = "starred mob esp toggle",
             size = OptionSize.DUAL,
-            category = "BROKEN", // Render
+            category = "Render", // Render
             subcategory = "Dungeons"
     )
     public static boolean mobEsp = false;
-    @Dropdown(
-            name = "Mob esp color",
-            options = { "Red","Blue","Purple" },
-            category = "BROKEN", // Render
+    @cc.polyfrost.oneconfig.config.annotations.Color( //wtf, not sigma
+            name = "starred mob esp color",
+            category = "Render",
             subcategory = "Dungeons"
     )
-    public static int mobEspColor = 0;
+    public static OneColor mobEspColor = new OneColor(255, 255, 255, 255);
 
     @Switch(
             name = "autobreak",
@@ -150,15 +150,6 @@ public class FlorboConfig extends Config {
     // getters
     public static Color getChestEspColor() {
         switch (chestEspColor) {
-            case 1: return Color.BLUE;
-            case 2: return Color.MAGENTA;
-            default: return Color.RED;
-            // if undefined red
-            // or if case 0 (RED)
-        }
-    }
-    public static Color getMobEspColor() {
-        switch (mobEspColor) {
             case 1: return Color.BLUE;
             case 2: return Color.MAGENTA;
             default: return Color.RED;
