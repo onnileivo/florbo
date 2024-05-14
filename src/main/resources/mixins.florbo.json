@@ -9,8 +9,7 @@
   "client": [
     "AccessorRenderManager",
     "MainMenuMixin",
-    "MinecraftMixin",
-    "NetworkManagerMixin"
+    "MinecraftMixin"
   ],
   "verbose": true
 }

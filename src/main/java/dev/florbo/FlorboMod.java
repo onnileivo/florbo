@@ -34,7 +34,7 @@ public class FlorboMod {
     public static FlorboConfig config;
     public Minecraft mc;
     public static String splashText;
-    public String[] customSplashes = {"florbo client best mod !!!!", "ABONGUS", "what the sigma", "skibidi toilet w rizz", "ono ono ono ono ono ono", "sponsored by suupan kebab oy", "i shitted", "HOP ON HYPIXEL NO DOWNTIME", "local e-kittens in your area !!!"};
+    public static final String[] customSplashes = {"florbo client best mod !!!!", "ABONGUS", "what the sigma", "skibidi toilet w rizz", "ono ono ono ono ono ono", "sponsored by suupan kebab oy", "i shitted", "HOP ON HYPIXEL NO DOWNTIME", "local e-kittens in your area !!!"};
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {
         splashText = getRandomString(customSplashes);
