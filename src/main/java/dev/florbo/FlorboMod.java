@@ -4,6 +4,7 @@ package dev.florbo;
 import dev.florbo.command.FlorboCommand;
 import dev.florbo.config.FlorboConfig;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
+import dev.florbo.features.funny.FakeAdminMsgLmao;
 import dev.florbo.features.hypixel.dungeons.MobEsp;
 import dev.florbo.features.hypixel.farming.AutoBreak;
 import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
@@ -46,6 +47,7 @@ public class FlorboMod {
         MinecraftForge.EVENT_BUS.register(new AutoBreak());
         MinecraftForge.EVENT_BUS.register(new ToggleAutoBreak());
         MinecraftForge.EVENT_BUS.register(new MobEsp());
+        MinecraftForge.EVENT_BUS.register(new FakeAdminMsgLmao());
     }
     public static String getRandomString(String[] array) {
         return array[new Random().nextInt(array.length)];
