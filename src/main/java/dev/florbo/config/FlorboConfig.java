@@ -59,8 +59,6 @@ public class FlorboConfig extends Config {
     )
     public static int starredMobEspLineWidth = 1;
 
-
-
     @Switch(
             name = "autobreak",
             description = "breaks blocks and moves with the arrowkeys",
