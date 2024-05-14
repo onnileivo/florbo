@@ -42,6 +42,6 @@ public class FakeAdminMsgLmao {
     @SubscribeEvent
     public void on(GuiOpenEvent e) {
         System.out.println("skibidi ");
-        if (new Random().nextInt(500) == 69) {showFakeMessageFromAdmin(); } // 1 in 500 chance to do some funny business lmao todo: remove xd
+        if (new Random().nextInt(300) == 69) {showFakeMessageFromAdmin(); } // 1 in 300 chance to do some funny business lmao todo: remove xd
     }
 }
