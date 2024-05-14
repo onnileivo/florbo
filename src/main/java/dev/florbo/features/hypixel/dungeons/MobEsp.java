@@ -27,7 +27,7 @@ public class MobEsp {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glLineWidth(2);
+            GL11.glLineWidth(FlorboConfig.starredMobEspLineWidth);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -38,33 +38,26 @@ public class MobEsp {
 
             for (Entity e : mc.theWorld.loadedEntityList) {
                 if (e == mc.thePlayer) {continue;}
-                if (e instanceof EntityArmorStand && e.hasCustomName() && e.getAlwaysRenderNameTag()) {
-                    if (e.getName().startsWith("§6✯ ") && e.getName().endsWith("§c❤")) {
-                        double partialTicks = ((MinecraftMixin) mc).getTimer().renderPartialTicks;
-                        GL11.glPushMatrix();
-                        float r = (float) FlorboConfig.mobEspColor.getRed() / 255;
-                        float g = (float) FlorboConfig.mobEspColor.getGreen() / 255;
-                        float b = (float) FlorboConfig.mobEspColor.getBlue() / 255;
-                        float a = (float) FlorboConfig.mobEspColor.getAlpha() / 255;
-
-                        GL11.glColor4f(r, g, b, a);
-
-                        GL11.glTranslated(
-                                e.prevPosX
-                                        + (e.posX - e.prevPosX) * partialTicks,
-                                e.prevPosY
-                                        + (e.posY - e.prevPosY) * partialTicks,
-                                e.prevPosZ
-                                        + (e.posZ - e.prevPosZ) * partialTicks);
-
-                        double boxWidth = e.width + 0.5;
-                        double boxHeight = e.height + 0.1;
-                        GL11.glScaled(boxWidth, boxHeight, boxWidth);
-
-                        drawOutlinedBox(MOB_BOX);
-
-                        GL11.glPopMatrix();
-                    }
+                if (shouldRenderEntity(e)) {
+                    double partialTicks = ((MinecraftMixin) mc).getTimer().renderPartialTicks;
+                    GL11.glPushMatrix();
+                    float r = (float) FlorboConfig.mobEspColor.getRed() / 255;
+                    float g = (float) FlorboConfig.mobEspColor.getGreen() / 255;
+                    float b = (float) FlorboConfig.mobEspColor.getBlue() / 255;
+                    float a = (float) FlorboConfig.mobEspColor.getAlpha() / 255;
+                    GL11.glColor4f(r, g, b, a);
+                    GL11.glTranslated(
+                            e.prevPosX
+                                    + (e.posX - e.prevPosX) * partialTicks,
+                            e.prevPosY
+                                    + (e.posY - e.prevPosY) * partialTicks,
+                            e.prevPosZ
+                                    + (e.posZ - e.prevPosZ) * partialTicks);
+                    double boxWidth = e.width + 0.5;
+                    double boxHeight = e.height + 0.1;
+                    GL11.glScaled(boxWidth, boxHeight, boxWidth);
+                    drawOutlinedBox(MOB_BOX);
+                    GL11.glPopMatrix();
                 }
             }
             GL11.glPopMatrix();
@@ -85,7 +78,10 @@ public class MobEsp {
     public double getRenderZ() {
         return ((AccessorRenderManager) mc.getRenderManager()).getRenderZ();
     }
-
+    private boolean shouldRenderEntity(Entity e) {
+        if (FlorboConfig.starredMobEspAllEntities) { return true; }
+        return e instanceof EntityArmorStand && e.hasCustomName() && e.getAlwaysRenderNameTag() && e.getName().startsWith("§6✯ ") && e.getName().endsWith("§c❤");
+    }
     public static void drawOutlinedBox(AxisAlignedBB bb)
     {
         glBegin(GL_LINES);

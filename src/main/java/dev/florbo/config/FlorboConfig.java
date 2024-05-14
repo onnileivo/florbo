@@ -49,6 +49,17 @@ public class FlorboConfig extends Config {
             subcategory = "Dungeons"
     )
     public static OneColor mobEspColor = new OneColor(255, 255, 255, 255);
+    @Slider(
+            name = "starred mob esp line width",
+            min = 1f, max = 10f,
+
+            step = 1,
+            category = "Render",
+            subcategory = "Dungeons"
+    )
+    public static int starredMobEspLineWidth = 1;
+
+
 
     @Switch(
             name = "autobreak",
@@ -146,6 +157,16 @@ public class FlorboConfig extends Config {
             subcategory = "Timer"
     )
     public OneKeyBind resetTimerBind = new OneKeyBind(Keyboard.KEY_G);
+
+
+    /*----DEBUGS----*/ // needed so debug last in list :DDDDDDDDDDD
+
+    @Switch(
+            name = "starred mob esp all entities",
+            category = "DEBUG"
+    )
+    public static boolean starredMobEspAllEntities = false;
+
 
     // getters
     public static Color getChestEspColor() {
