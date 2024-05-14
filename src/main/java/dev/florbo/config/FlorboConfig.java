@@ -51,7 +51,7 @@ public class FlorboConfig extends Config {
     public static OneColor mobEspColor = new OneColor(255, 255, 255, 255);
     @Slider(
             name = "starred mob esp line width",
-            min = 1f, max = 10f,
+            min = 1, max = 10,
 
             step = 1,
             category = "Render",
