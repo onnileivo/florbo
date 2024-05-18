@@ -1,6 +1,7 @@
 package dev.florbo.features.funny;
 
 import dev.florbo.FlorboMod;
+import dev.florbo.config.FlorboConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -41,7 +42,7 @@ public class FakeAdminMsgLmao {
     }
     @SubscribeEvent
     public void on(GuiOpenEvent e) {
-        System.out.println("skibidi ");
+        if (!FlorboConfig.funnyMessagesFromAdmins) {return;}
         if (new Random().nextInt(300) == 69) {showFakeMessageFromAdmin(); } // 1 in 300 chance to do some funny business lmao todo: remove xd
     }
 }

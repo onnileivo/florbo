@@ -36,28 +36,93 @@ public class FlorboConfig extends Config {
             subcategory = "Mining"
     )
     public static int chestEspColor = 0;
+
+    /*-----------------------STARRED MOB ESP-----------------------*/
     @Switch(
             name = "starred mob esp toggle",
             size = OptionSize.DUAL,
             category = "Render", // Render
-            subcategory = "Dungeons"
+            subcategory = "starred mob esp"
     )
     public static boolean mobEsp = false;
     @cc.polyfrost.oneconfig.config.annotations.Color( //wtf, not sigma
             name = "starred mob esp color",
             category = "Render",
-            subcategory = "Dungeons"
+            subcategory = "starred mob esp"
     )
     public static OneColor mobEspColor = new OneColor(255, 255, 255, 255);
+
+
     @Slider(
             name = "starred mob esp line width",
             min = 1, max = 10,
 
             step = 1,
             category = "Render",
-            subcategory = "Dungeons"
+            subcategory = "starred mob esp"
     )
     public static int starredMobEspLineWidth = 1;
+
+    @Slider(
+            name = "starred mob esp box height (can be neg)",
+            category = "Render",
+            subcategory = "starred mob esp",
+            min = -10f,
+            max = 10f
+    )
+    public static float starredMobEspBoxHeight = 2f;
+
+    @Slider(
+            name = "starred mob esp box width (can be neg)",
+            category = "Render",
+            subcategory = "starred mob esp",
+            min = -10,
+            max = 10f
+    )
+    public static float starredMobEspBoxWidth = 1f;
+
+    /*----------------------FELS ESP------------------*/
+    @Switch(
+            name = "fels mob esp",
+            size = OptionSize.DUAL,
+            category = "Render",
+            subcategory = "fels esp"
+    )
+    public static boolean felsEsp = false;
+    @cc.polyfrost.oneconfig.config.annotations.Color( //wtf, not sigma
+            name = "fels mob esp color",
+            category = "Render",
+            subcategory = "fels esp"
+    )
+    public static OneColor felsEspColor = new OneColor(255, 255, 255, 255);
+
+    @Slider(
+            name = "fels mob esp box width",
+            min = -10f,
+            max = 10f
+    )
+    public static float felsEspBoxWidth = 2f;
+
+    @Slider(
+            name = "fels mob esp box heigth",
+            min = -10f,
+            max = 10f
+    )
+    public static float felsEspBoxHeight = 2f;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Switch(
             name = "autobreak",
@@ -133,6 +198,13 @@ public class FlorboConfig extends Config {
     )
     public OneKeyBind resetCounterBind = new OneKeyBind(Keyboard.KEY_J);
 
+    @Switch(
+            name = "funny messages from admins",
+            category = "Funny",
+            subcategory = "useless xd"
+
+    )
+    public static boolean funnyMessagesFromAdmins = false;
 
 
     @HUD(
@@ -164,7 +236,6 @@ public class FlorboConfig extends Config {
             category = "DEBUG"
     )
     public static boolean starredMobEspAllEntities = false;
-
 
     // getters
     public static Color getChestEspColor() {

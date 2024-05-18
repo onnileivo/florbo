@@ -6,6 +6,7 @@ import dev.florbo.mixin.MinecraftMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,7 +20,6 @@ public class MobEsp {
     private static final AxisAlignedBB MOB_BOX =
             new AxisAlignedBB(-0.5, 0, -0.5, 0.5, 1, 0.5);
 
-
     @SubscribeEvent
     public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
         if (FlorboConfig.mobEsp) {
@@ -30,7 +30,6 @@ public class MobEsp {
             GL11.glLineWidth(FlorboConfig.starredMobEspLineWidth);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
-
             GL11.glPushMatrix();
             GL11.glTranslated(-getRenderX(),
                     -getRenderY(),
@@ -39,12 +38,27 @@ public class MobEsp {
             for (Entity e : mc.theWorld.loadedEntityList) {
                 if (e == mc.thePlayer) {continue;}
                 if (shouldRenderEntity(e)) {
+                    double boxWidth, boxHeight;
+                    float r, g, b, a;
+                    if (FlorboConfig.felsEsp && isFels(e)) {
+                        r = (float) FlorboConfig.felsEspColor.getRed() / 255;
+                        g = (float) FlorboConfig.felsEspColor.getGreen() / 255;
+                        b = (float) FlorboConfig.felsEspColor.getBlue() / 255;
+                        a = (float) FlorboConfig.felsEspColor.getAlpha() / 255;
+                        boxWidth = FlorboConfig.felsEspBoxWidth;
+                        boxHeight = FlorboConfig.felsEspBoxHeight;
+                    } else {
+                        r = (float) FlorboConfig.mobEspColor.getRed() / 255;
+                        g = (float) FlorboConfig.mobEspColor.getGreen() / 255;
+                        b = (float) FlorboConfig.mobEspColor.getBlue() / 255;
+                        a = (float) FlorboConfig.mobEspColor.getAlpha() / 255;
+                        boxWidth = FlorboConfig.starredMobEspBoxWidth;
+                        boxHeight = FlorboConfig.starredMobEspBoxHeight;
+                    }
+
+
                     double partialTicks = ((MinecraftMixin) mc).getTimer().renderPartialTicks;
                     GL11.glPushMatrix();
-                    float r = (float) FlorboConfig.mobEspColor.getRed() / 255;
-                    float g = (float) FlorboConfig.mobEspColor.getGreen() / 255;
-                    float b = (float) FlorboConfig.mobEspColor.getBlue() / 255;
-                    float a = (float) FlorboConfig.mobEspColor.getAlpha() / 255;
                     GL11.glColor4f(r, g, b, a);
                     GL11.glTranslated(
                             e.prevPosX
@@ -53,8 +67,7 @@ public class MobEsp {
                                     + (e.posY - e.prevPosY) * partialTicks,
                             e.prevPosZ
                                     + (e.posZ - e.prevPosZ) * partialTicks);
-                    double boxWidth = e.width + 0.5;
-                    double boxHeight = e.height + 0.1;
+
                     GL11.glScaled(boxWidth, boxHeight, boxWidth);
                     drawOutlinedBox(MOB_BOX);
                     GL11.glPopMatrix();
@@ -79,13 +92,22 @@ public class MobEsp {
         return ((AccessorRenderManager) mc.getRenderManager()).getRenderZ();
     }
     private boolean shouldRenderEntity(Entity e) {
-        if (FlorboConfig.starredMobEspAllEntities) { return true; }
-        return e instanceof EntityArmorStand && e.hasCustomName() && e.getAlwaysRenderNameTag() && e.getName().startsWith("§6✯ ") && e.getName().endsWith("§c❤");
+        if (FlorboConfig.starredMobEspAllEntities) return true;
+        if (e instanceof EntityArmorStand && e.hasCustomName() && e.getAlwaysRenderNameTag()) {
+            return (e.getName().startsWith("§6✯ ") && e.getName().endsWith("§c❤"));
+        }
+        return FlorboConfig.felsEsp && isFels(e);
     }
+
+    private boolean isFels(Entity e) {
+        return e.getName().equals("Dinnerbone") && e instanceof EntityEnderman;
+    }
+
     public static void drawOutlinedBox(AxisAlignedBB bb)
     {
         glBegin(GL_LINES);
         {
+
             glVertex3d(bb.minX, bb.minY, bb.minZ);
             glVertex3d(bb.maxX, bb.minY, bb.minZ);
 
@@ -124,6 +146,4 @@ public class MobEsp {
         }
         glEnd();
     }
-
-
 }
