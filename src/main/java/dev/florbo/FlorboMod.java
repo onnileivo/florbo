@@ -26,14 +26,14 @@ import java.util.Random;
  */
 @Mod(modid = FlorboMod.MODID, name = FlorboMod.NAME, version = FlorboMod.VERSION, clientSideOnly = true)
 public class FlorboMod {
-    @Mod.Instance(MODID)
-    public static FlorboMod INSTANCE;
-    public static FlorboConfig config;
-
     public static final String MODID = "@ID@";
     public static final String NAME = "@NAME@";
     public static final String VERSION = "@VER@";
 
+    public static FlorboConfig config;
+
+    @Mod.Instance(MODID)
+    public static FlorboMod INSTANCE;
 
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static String splashText;
