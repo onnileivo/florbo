@@ -30,7 +30,6 @@ public class MobEsp {
             GL11.glLineWidth(FlorboConfig.starredMobEspLineWidth);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
-            GL11.glPushMatrix();
             GL11.glTranslated(-getRenderX(),
                     -getRenderY(),
                     -getRenderZ());
@@ -73,7 +72,6 @@ public class MobEsp {
                     GL11.glPopMatrix();
                 }
             }
-            GL11.glPopMatrix();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_BLEND);
