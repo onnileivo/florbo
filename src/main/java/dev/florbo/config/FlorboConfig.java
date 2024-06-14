@@ -99,19 +99,51 @@ public class FlorboConfig extends Config {
     @Slider(
             name = "fels mob esp box width",
             min = -10f,
-            max = 10f
+            max = 10f,
+            subcategory = "fels esp"
     )
     public static float felsEspBoxWidth = 2f;
 
     @Slider(
             name = "fels mob esp box heigth",
             min = -10f,
-            max = 10f
+            max = 10f,
+            subcategory = "fels esp"
     )
     public static float felsEspBoxHeight = 2f;
 
 
+    // INVIS SHADOW ASSSIN
 
+    @Switch(
+            name = "Invis SA esp",
+            size = OptionSize.DUAL,
+            category = "Render",
+            subcategory = "Sa esp"
+    )
+    public static boolean saEsp = false;
+    @cc.polyfrost.oneconfig.config.annotations.Color( //wtf, not sigma
+            name = "SA esp color",
+            category = "Render",
+            subcategory = "Sa esp"
+    )
+    public static OneColor saEspColor = new OneColor(255, 255, 255, 255);
+
+    @Slider(
+            name = "SA mob esp box width",
+            min = -10f,
+            max = 10f,
+            subcategory = "Sa esp"
+    )
+    public static float saEspBoxWidth = 2f;
+
+    @Slider(
+            name = "sa mob esp box heigth",
+            min = -10f,
+            max = 10f,
+            subcategory = "Sa esp"
+    )
+    public static float saEspBoxHeight = 2f;
 
 
 

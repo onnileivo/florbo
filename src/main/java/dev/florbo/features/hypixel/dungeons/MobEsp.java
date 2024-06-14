@@ -1,9 +1,14 @@
 package dev.florbo.features.hypixel.dungeons;
 
 import dev.florbo.config.FlorboConfig;
+import dev.florbo.features.hypixel.dungeons.helpers.impl.Fels;
+import dev.florbo.features.hypixel.dungeons.helpers.Renderable;
+import dev.florbo.features.hypixel.dungeons.helpers.impl.ShadowAssasin;
+import dev.florbo.features.hypixel.dungeons.helpers.impl.StarredMob;
 import dev.florbo.mixin.AccessorRenderManager;
 import dev.florbo.mixin.MinecraftMixin;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -15,7 +20,10 @@ import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 
 public class MobEsp {
+    //dooky oop solution coming up
+
     public static Minecraft mc = Minecraft.getMinecraft();
+    public Renderable renderable;
 
     private static final AxisAlignedBB MOB_BOX =
             new AxisAlignedBB(-0.5, 0, -0.5, 0.5, 1, 0.5);
@@ -23,7 +31,6 @@ public class MobEsp {
     @SubscribeEvent
     public void onRenderWorldLastEvent(RenderWorldLastEvent event) {
         if (FlorboConfig.mobEsp) {
-
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
@@ -36,25 +43,16 @@ public class MobEsp {
 
             for (Entity e : mc.theWorld.loadedEntityList) {
                 if (e == mc.thePlayer) {continue;}
-                if (shouldRenderEntity(e)) {
+                renderable = getRenderable(e);
+                if (renderable != null && renderable.getEnabled()) {
                     double boxWidth, boxHeight;
                     float r, g, b, a;
-                    if (FlorboConfig.felsEsp && isFels(e)) {
-                        r = (float) FlorboConfig.felsEspColor.getRed() / 255;
-                        g = (float) FlorboConfig.felsEspColor.getGreen() / 255;
-                        b = (float) FlorboConfig.felsEspColor.getBlue() / 255;
-                        a = (float) FlorboConfig.felsEspColor.getAlpha() / 255;
-                        boxWidth = FlorboConfig.felsEspBoxWidth;
-                        boxHeight = FlorboConfig.felsEspBoxHeight;
-                    } else {
-                        r = (float) FlorboConfig.mobEspColor.getRed() / 255;
-                        g = (float) FlorboConfig.mobEspColor.getGreen() / 255;
-                        b = (float) FlorboConfig.mobEspColor.getBlue() / 255;
-                        a = (float) FlorboConfig.mobEspColor.getAlpha() / 255;
-                        boxWidth = FlorboConfig.starredMobEspBoxWidth;
-                        boxHeight = FlorboConfig.starredMobEspBoxHeight;
-                    }
-
+                    r = (float) renderable.getColor().getRed() / 255;
+                    g = (float) renderable.getColor().getGreen() / 255;
+                    b = (float) renderable.getColor().getBlue() / 255;
+                    a = (float) renderable.getColor().getAlpha() / 255;
+                    boxWidth = renderable.getBoxWidth();
+                    boxHeight = renderable.getBoxHeight();
 
                     double partialTicks = ((MinecraftMixin) mc).getTimer().renderPartialTicks;
                     GL11.glPushMatrix();
@@ -72,12 +70,22 @@ public class MobEsp {
                     GL11.glPopMatrix();
                 }
             }
+
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
         }
     }
+
+    private Renderable getRenderable(Entity e) {
+        if (isStarred(e)) {return new StarredMob();}
+        if (isFels(e)) {return new Fels();}
+        if (isSA(e)) {return new ShadowAssasin();}
+        if (FlorboConfig.starredMobEspAllEntities) {return new StarredMob();}
+        return null;
+    }
+
     public double getRenderX() {
         return ((AccessorRenderManager) mc.getRenderManager()).getRenderX();
     }
@@ -89,17 +97,12 @@ public class MobEsp {
     public double getRenderZ() {
         return ((AccessorRenderManager) mc.getRenderManager()).getRenderZ();
     }
-    private boolean shouldRenderEntity(Entity e) {
-        if (FlorboConfig.starredMobEspAllEntities) return true;
-        if (e instanceof EntityArmorStand && e.hasCustomName() && e.getAlwaysRenderNameTag()) {
-            return (e.getName().startsWith("§6✯ ") && e.getName().endsWith("§c❤"));
-        }
-        return FlorboConfig.felsEsp && isFels(e);
-    }
 
-    private boolean isFels(Entity e) {
-        return e.getName().equals("Dinnerbone") && e instanceof EntityEnderman;
-    }
+    private boolean isStarred(Entity e) {return (e instanceof EntityArmorStand && e.hasCustomName() && e.getAlwaysRenderNameTag()) && (e.getName().startsWith("§6✯ ") && e.getName().endsWith("§c❤"));}
+
+    private boolean isFels(Entity e) {return e.getName().equals("Dinnerbone") && e instanceof EntityEnderman;}
+
+    private boolean isSA(Entity e) {return e.getName().startsWith("Shadow Assasin") && e instanceof EntityOtherPlayerMP; } //Invis shadow assasin check
 
     public static void drawOutlinedBox(AxisAlignedBB bb)
     {

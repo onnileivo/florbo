@@ -1,14 +1,14 @@
 [
   {
-    "modid": "${id}",
-    "name": "${name}",
-    "description": "",
-    "version": "${version}",
+    "modid": "florbo",
+    "name": "Florbo",
+    "description": "best skibidi sigma client on this side of new hampshire",
+    "version": "6.9",
     "mcversion": "1.8.9",
     "url": "",
     "updateUrl": "",
     "authorList": [
-      "Your Name"
+      "mario judah"
     ],
     "credits": "",
     "logoFile": "",
