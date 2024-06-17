@@ -25,14 +25,13 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.ChatComponentText;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.BaseConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-
 
 import java.io.*;
 import java.net.URI;
@@ -123,12 +122,12 @@ public class Utils {
     public static List<Path> getAllPaths (String folderName) {
         List<Path> paths = new ArrayList<>();
         try {
-            URI uri = DungeonRooms.class.getResource("/assets/dungeonrooms/" + folderName).toURI();
+            URI uri = DungeonRooms.class.getResource("/assets/roomdetection/" + folderName).toURI();
             Path Path;
             FileSystem fileSystem = null;
             if (uri.getScheme().equals("jar")) {
                 fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
-                Path = fileSystem.getPath("/assets/dungeonrooms/" + folderName);
+                Path = fileSystem.getPath("/assets/roomdetection/" + folderName);
             } else {
                 Path = Paths.get(uri);
             }
@@ -159,13 +158,31 @@ public class Utils {
                 ObjectInputStream data = new ObjectInputStream(new InflaterInputStream(input));
                 long[] roomData = (long[]) data.readObject();
                 allRoomData.put(name.substring(0, name.length() - 9), roomData);
-                DungeonRooms.logger.debug("DungeonRooms: Loaded " + name);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        DungeonRooms.logger.info("DungeonRooms: Loaded " + allRoomData.size() + " " + parentFolder + " rooms");
         return allRoomData;
+    }
+
+    /**
+     * Used to set the log level of just this mod
+     */
+    public static void setLogLevel(Logger logger, Level level) {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+
+        BaseConfiguration config = (BaseConfiguration) ctx.getConfiguration();
+
+        LoggerConfig loggerConfig = config.getLoggerConfig(logger.getName());
+        LoggerConfig specificConfig = loggerConfig;
+
+        if (!loggerConfig.getName().equals(logger.getName())) {
+            specificConfig = new LoggerConfig(logger.getName(), level, true);
+            specificConfig.setParent(loggerConfig);
+            config.addLogger(logger.getName(), specificConfig);
+        }
+        specificConfig.setLevel(level);
+        ctx.updateLoggers();
     }
 
     /**

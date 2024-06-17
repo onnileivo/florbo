@@ -166,11 +166,11 @@ public class Waypoints {
                 GlStateManager.disableDepth();
                 GlStateManager.disableCull();
                 if (showBoundingBox && frustum.isBoxInFrustum(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
-                    WaypointUtils.drawFilledBoundingBox(new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1), color, 0.4f);
+                    //WaypointUtils.drawFilledBoundingBox(new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1), color, 0.4f);
                 }
                 GlStateManager.disableTexture2D();
-                if (showBeacon && distSq > 5*5) WaypointUtils.renderBeaconBeam(x, y + 1, z, color.getRGB(), 0.25f, event.partialTicks);
-                if (showWaypointText) WaypointUtils.renderWaypointText(secretsObject.get("secretName").getAsString(), pos.up(2), event.partialTicks);
+                //if (showBeacon && distSq > 5*5) WaypointUtils.renderBeaconBeam(x, y + 1, z, color.getRGB(), 0.25f, event.partialTicks);
+                //if (showWaypointText) WaypointUtils.renderWaypointText(secretsObject.get("secretName").getAsString(), pos.up(2), event.partialTicks);
                 GlStateManager.disableLighting();
                 GlStateManager.enableTexture2D();
                 GlStateManager.enableDepth();
@@ -226,7 +226,6 @@ public class Waypoints {
                                 if (secretsObject.get("secretName").getAsString().substring(0,2).replaceAll("[\\D]", "").equals(String.valueOf(j))) {
                                     Waypoints.secretsList.set(j-1, false);
                                     Waypoints.allSecretsMap.replace(roomName, Waypoints.secretsList);
-                                    DungeonRooms.logger.info("DungeonRooms: Detected " + secretsObject.get("category").getAsString() + " click, turning off waypoint for secret #" + j);
                                     break;
                                 }
                             }
@@ -275,7 +274,6 @@ public class Waypoints {
                                             if (!Waypoints.secretsList.get(j-1)) continue;
                                             Waypoints.secretsList.set(j-1, false);
                                             Waypoints.allSecretsMap.replace(roomName, Waypoints.secretsList);
-                                            DungeonRooms.logger.info("DungeonRooms: " + entity.getCommandSenderEntity().getName() + " picked up " +  StringUtils.stripControlCodes(name) + " from a "  + secretsObject.get("category").getAsString() + " secret, turning off waypoint for secret #" + j);
                                             return;
                                         }
                                     }
@@ -314,7 +312,6 @@ public class Waypoints {
                                         if (!Waypoints.secretsList.get(j-1)) continue;
                                         Waypoints.secretsList.set(j-1, false);
                                         Waypoints.allSecretsMap.replace(roomName, Waypoints.secretsList);
-                                        DungeonRooms.logger.info("DungeonRooms: Player sneaked near " + secretsObject.get("category").getAsString() + " secret, turning off waypoint for secret #" + j);
                                         return;
                                     }
                                 }

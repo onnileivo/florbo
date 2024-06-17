@@ -18,7 +18,6 @@
 
 package io.github.quantizr.dungeonrooms.utils;
 
-import io.github.quantizr.dungeonrooms.dungeons.catacombs.DungeonManager;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
@@ -46,42 +45,16 @@ public class MapUtils {
     }
 
     /**
-     * Reads the map data and converts it into a 2D Integer array of RGB colors which can be used by the rest of the
+     * Reads the hotbar map and converts it into a 2D Integer array of RGB colors which can be used by the rest of the
      * code
      *
      * @return null if map not found, otherwise 128x128 Array of the RGB Integer colors of each point on the map
      */
     public static Integer[][] updatedMap() {
-        return updatedMap(DungeonManager.mapId);
-    }
-
-    /**
-     * Reads the map data and converts it into a 2D Integer array of RGB colors which can be used by the rest of the
-     * code
-     *
-     * @return null if map not found, otherwise 128x128 Array of the RGB Integer colors of each point on the map
-     */
-    public static Integer[][] updatedMap(int mapId) {
-        return updatedMap((MapData) Minecraft.getMinecraft().theWorld.getMapStorage().loadData(MapData.class, "map_" + mapId));
-    }
-
-    /**
-     * Reads the map item and converts it into a 2D Integer array of RGB colors which can be used by the rest of the
-     * code
-     *
-     * @return null if map not found, otherwise 128x128 Array of the RGB Integer colors of each point on the map
-     */
-    public static Integer[][] updatedMap(ItemStack mapSlot) {
-        return updatedMap(Items.filled_map.getMapData(mapSlot, Minecraft.getMinecraft().theWorld));
-    }
-
-    /**
-     * Reads the map data and converts it into a 2D Integer array of RGB colors which can be used by the rest of the
-     * code
-     *
-     * @return null if map not found, otherwise 128x128 Array of the RGB Integer colors of each point on the map
-     */
-    public static Integer[][] updatedMap(MapData mapData) {
+        if (!mapExists()) return null; //make sure map exists
+        Minecraft mc = Minecraft.getMinecraft();
+        ItemStack mapSlot = mc.thePlayer.inventory.getStackInSlot(8); //get map ItemStack
+        MapData mapData = Items.filled_map.getMapData(mapSlot, mc.theWorld);
         if(mapData == null) return null;
         Integer[][] map = new Integer[128][128];
 
@@ -335,7 +308,10 @@ public class MapUtils {
      * @return the coordinate of the player marker on the map
      */
     public static Point playerMarkerPos() {
-        MapData mapData = (MapData) Minecraft.getMinecraft().theWorld.getMapStorage().loadData(MapData.class, "map_" + DungeonManager.mapId);
+        if (!mapExists()) return null; //make sure map exists
+        Minecraft mc = Minecraft.getMinecraft();
+        ItemStack mapSlot = mc.thePlayer.inventory.getStackInSlot(8); //get map ItemStack
+        MapData mapData = Items.filled_map.getMapData(mapSlot, mc.theWorld);
         if(mapData == null) return null;
         if (mapData.mapDecorations != null) {
             for (Map.Entry<String, Vec4b> entry : mapData.mapDecorations.entrySet()) {
@@ -423,6 +399,12 @@ public class MapUtils {
      * @return the actual coordinate of a block given the relative coordinate
      */
     public static BlockPos actualToRelative(BlockPos actual, String cornerDirection, Point locationOfCorner) {
+        if(cornerDirection == null) {
+            cornerDirection = "NW";
+        }
+        if(locationOfCorner == null) {
+            locationOfCorner = new Point(0, 0);
+        }
         double x = 0;
         double z = 0;
         switch (cornerDirection) {
@@ -450,6 +432,12 @@ public class MapUtils {
      * @return the relative coordinate of a block given the actual coordinate
      */
     public static BlockPos relativeToActual(BlockPos relative, String cornerDirection, Point locationOfCorner) {
+        if(cornerDirection == null) {
+            cornerDirection = "NW";
+        }
+        if(locationOfCorner == null) {
+            locationOfCorner = new Point(0, 0);
+        }
         double x = 0;
         double z = 0;
         switch (cornerDirection) {

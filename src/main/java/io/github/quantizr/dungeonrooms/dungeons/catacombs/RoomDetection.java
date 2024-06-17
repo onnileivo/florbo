@@ -18,7 +18,6 @@
 
 package io.github.quantizr.dungeonrooms.dungeons.catacombs;
 
-import com.google.gson.JsonObject;
 import io.github.quantizr.dungeonrooms.DungeonRooms;
 import io.github.quantizr.dungeonrooms.utils.MapUtils;
 import io.github.quantizr.dungeonrooms.utils.RoomDetectionUtils;
@@ -27,11 +26,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import xyz.yourboykyle.secretroutes.events.OnEnterNewRoom;
+import xyz.yourboykyle.secretroutes.utils.Room;
 
 import java.awt.*;
 import java.util.List;
@@ -59,6 +60,7 @@ public class RoomDetection {
     public static String roomDirection = "undefined";
     public static Point roomCorner;
 
+
     public static HashSet<BlockPos> currentScannedBlocks = new HashSet<>();
     public static HashMap<BlockPos, Integer> blocksToCheck = new HashMap<>();
     public static int totalBlocksAvailableToCheck = 0;
@@ -75,42 +77,31 @@ public class RoomDetection {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
-        if (!Utils.inCatacombs) return;
         EntityPlayerSP player = mc.thePlayer;
+
+        if (!Utils.inCatacombs) return;
 
         //From this point forward, everything assumes that Utils.inCatacombs == true
         if (gameStage == 2) { //Room clearing phase
-            if (mapId == null && extractMapId() == null)  // Extract the map id
-                return; //  If we failed to extract the map id, we cannot detect the dungeon room
-
             stage2Ticks++;
             if (stage2Ticks == 10) {
                 stage2Ticks = 0;
                 //start ExecutorService with one thread
                 if (stage2Executor == null || stage2Executor.isTerminated()) {
                     stage2Executor = Executors.newSingleThreadExecutor();
-                    DungeonRooms.logger.debug("DungeonRooms: New Single Thread Executor Started");
                 }
                 //set entranceMapCorners
                 if (entranceMapCorners == null) {
                     map = MapUtils.updatedMap();
                     entranceMapCorners = MapUtils.entranceMapCorners(map);
-                    DungeonRooms.logger.info("DungeonRooms: Getting entrance map corners from map data...");
-                } else if (entranceMapCorners[0] == null || entranceMapCorners[1] == null) { //prevent crashes if map data bugged
-                    DungeonRooms.logger.warn("DungeonRooms: Entrance room not found, map data possibly bugged");
+                } else if (entranceMapCorners[0] == null || entranceMapCorners[1] == null) { //prevent crashes if hotbar map bugged
                     entranceMapNullCount++;
                     entranceMapCorners = null; //retry getting corners again next loop
                     if (entranceMapNullCount == 8) {
-                        player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                                + "Dungeon Rooms: Error with map data, perhaps your texture pack is interfering with room detection?"));
-                        DungeonRooms.textToDisplay = new ArrayList<>(Collections.singletonList(
-                                "Dungeon Rooms: " + EnumChatFormatting.RED + "Entrance Room corner not found"
-                        ));
+                        //Bugged hotbar map
                         //gameStage = 4;
-                        //DungeonRooms.logger.info("DungeonRooms: gameStage set to " + gameStage);
                     }
                 } else if (entrancePhysicalNWCorner == null) {
-                    DungeonRooms.logger.warn("DungeonRooms: Entrance Room coordinates not found");
                     //for when people dc and reconnect, or if initial check doesn't work
                     Point playerMarkerPos = MapUtils.playerMarkerPos();
                     if (playerMarkerPos != null) {
@@ -118,13 +109,9 @@ public class RoomDetection {
                         if (MapUtils.getMapColor(playerMarkerPos, map).equals("green") && MapUtils.getMapColor(closestNWMapCorner, map).equals("green")) {
                             if (!player.getPositionVector().equals(new Vec3(0.0D, 0.0D, 0.0D))) {
                                 entrancePhysicalNWCorner = MapUtils.getClosestNWPhysicalCorner(player.getPositionVector());
-                                DungeonRooms.logger.info("DungeonRooms: entrancePhysicalNWCorner has been set to " + entrancePhysicalNWCorner);
                             }
                         } else {
-                            DungeonRooms.textToDisplay = new ArrayList<>(Arrays.asList(
-                                    "Dungeon Rooms: " + EnumChatFormatting.RED + "Entrance Room coordinates not found",
-                                    EnumChatFormatting.RED + "Please go back into the middle of the Green Entrance Room."
-                            ));
+                            //Entrance room coordinates not found
                         }
                     }
                 } else {
@@ -134,11 +121,9 @@ public class RoomDetection {
                         resetCurrentRoom(); //only instance of resetting room other than leaving Dungeon
                     } else if (incompleteScan != 0 && System.currentTimeMillis() > incompleteScan) {
                         incompleteScan = 0;
-                        DungeonRooms.logger.info("DungeonRooms: Rescanning room...");
                         raytraceBlocks();
                     } else if (redoScan != 0 && System.currentTimeMillis() > redoScan) {
                         redoScan = 0;
-                        DungeonRooms.logger.info("DungeonRooms: Clearing data and rescanning room...");
                         possibleRooms = null;
                         raytraceBlocks();
                     }
@@ -146,8 +131,7 @@ public class RoomDetection {
                     if (currentPhysicalSegments == null || currentMapSegments == null || roomSize.equals("undefined") || roomColor.equals("undefined")) {
                         updateCurrentRoom();
                         if (roomColor.equals("undefined")) {
-                            DungeonRooms.textToDisplay = new ArrayList<>(Collections.singletonList("Dungeon Rooms: "
-                                    + EnumChatFormatting.RED + "Waiting for map data to update..."));
+                            //Waiting for hotbar map to update
                         } else {
                             switch (roomColor) {
                                 case "brown":
@@ -199,31 +183,15 @@ public class RoomDetection {
 
 
                     if (possibleRoomsSet.size() == 0) { //no match
-                        DungeonRooms.textToDisplay = new ArrayList<>(Arrays.asList(
-                                "Dungeon Rooms: " + EnumChatFormatting.RED + "No Matching Rooms Detected",
-                                EnumChatFormatting.RED + "This mod might not have data for this room.",
-                                EnumChatFormatting.WHITE + "Retrying every 5 seconds..."
-                        ));
-                        redoScan = System.currentTimeMillis() + 5000;
+                       redoScan = System.currentTimeMillis() + 5000;
 
                     } else if (possibleRoomsSet.size() == 1) { //room found
                         roomName =  possibleRoomsSet.first();
                         roomDirection = tempDirection;
                         roomCorner = MapUtils.getPhysicalCornerPos(roomDirection, currentPhysicalSegments);
-                        DungeonRooms.logger.info("DungeonRooms: 576 raytrace vectors sent, returning "
-                                + currentScannedBlocks.size() + " unique line-of-sight blocks, filtered down to "
-                                + totalBlocksAvailableToCheck + " blocks, out of which " + blocksUsed.size()
-                                + " blocks were used to uniquely identify " + roomName + ".");
                         newRoom();
 
                     } else { //too many matches
-                        DungeonRooms.textToDisplay = new ArrayList<>(Arrays.asList(
-                                "Dungeon Rooms: " + EnumChatFormatting.RED + "Unable to Determine Room Name",
-                                EnumChatFormatting.RED + "Not enough valid blocks were scanned, look at a more open area.",
-                                EnumChatFormatting.WHITE + "Retrying every second..."
-                        ));
-
-                        DungeonRooms.logger.debug("DungeonRooms: Possible rooms list = " + new ArrayList<>(possibleRoomsSet));
                         incompleteScan = System.currentTimeMillis() + 1000;
                     }
                 } catch (ExecutionException | InterruptedException e) {
@@ -232,6 +200,7 @@ public class RoomDetection {
             }
         }
     }
+
 
     void updateCurrentRoom() {
         EntityPlayerSP player = mc.thePlayer;
@@ -277,15 +246,6 @@ public class RoomDetection {
         Waypoints.secretNum = 0;
     }
 
-    public static Integer extractMapId() {
-        if (!MapUtils.mapExists())
-            return null;
-        ItemStack mapSlot = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(8); //get map ItemStack
-        // MapUtils.updatedMap(mapSlot); // - Skip check
-        DungeonRooms.logger.info("DungeonRooms: Extracting the map id");
-        return mapId = mapSlot.getMetadata();
-    }
-
     public static void newRoom() {
         if (!roomName.equals("undefined") && !roomCategory.equals("undefined")) {
             //update Waypoints info
@@ -300,30 +260,16 @@ public class RoomDetection {
 
             //update GUI text
             if (guiToggled) {
-                List<String> lineList = new ArrayList<>();
-                String line = "Dungeon Rooms: You are in " + EnumChatFormatting.GREEN + roomCategory
-                        + EnumChatFormatting.WHITE + " - " + EnumChatFormatting.GREEN + roomName;
-
-                if (DungeonRooms.roomsJson.get(roomName) != null) {
-                    JsonObject roomJson = DungeonRooms.roomsJson.get(roomName).getAsJsonObject();
-                    if (roomJson.get("fairysoul").getAsBoolean()) {
-                        line = line + EnumChatFormatting.WHITE + " - " + EnumChatFormatting.LIGHT_PURPLE + "Fairy Soul";
-                    }
-                    lineList.add(line);
-
-                    if (Waypoints.enabled && roomJson.get("secrets").getAsInt() != 0 && DungeonRooms.waypointsJson.get(roomName) == null) {
-                        lineList.add(EnumChatFormatting.RED + "No waypoints available");
-                        lineList.add(EnumChatFormatting.RED +  "Press \"" + GameSettings.getKeyDisplayString(DungeonRooms.keyBindings[0].getKeyCode()) +"\" to view images");
-                    }
-                }
-                DungeonRooms.textToDisplay = lineList;
+                //
             }
+
+            OnEnterNewRoom.onEnterNewRoom(new Room(roomName));
+            System.out.println("Entered new room: " + roomName);
         }
     }
 
 
     void raytraceBlocks() {
-        DungeonRooms.logger.debug("DungeonRooms: Raytracing visible blocks");
         long timeStart = System.currentTimeMillis();
 
         EntityPlayerSP player = mc.thePlayer;
@@ -359,12 +305,9 @@ public class RoomDetection {
                 }
             }
         }
-        DungeonRooms.logger.debug("DungeonRooms: Finished raytracing, amount of blocks to check = " + blocksToCheck.size());
         long timeFinish = System.currentTimeMillis();
-        DungeonRooms.logger.debug("DungeonRooms: Time to raytrace and filter (in ms): " + (timeFinish - timeStart));
 
         if (futureUpdatePossibleRooms == null && stage2Executor != null && !stage2Executor.isTerminated()) { //start processing in new thread to avoid lag in case of complex scan
-            DungeonRooms.logger.debug("DungeonRooms: Initializing Room Comparison Executor");
             futureUpdatePossibleRooms = getPossibleRooms();
         }
     }
@@ -376,7 +319,6 @@ public class RoomDetection {
             HashMap<String, List<String>> updatedPossibleRooms;
             List<String> possibleDirections;
             if (possibleRooms == null) {
-                DungeonRooms.logger.debug("DungeonRooms: No previous possible rooms list, creating new list...");
                 //no previous scans have been done, entering all possible rooms and directions
                 possibleDirections = MapUtils.possibleDirections(roomSize, currentMapSegments);
                 updatedPossibleRooms = new HashMap<>();
@@ -385,7 +327,6 @@ public class RoomDetection {
                 }
             } else {
                 //load info from previous scan
-                DungeonRooms.logger.debug("DungeonRooms: Loading possible rooms from previous room scan...");
                 updatedPossibleRooms = possibleRooms;
                 possibleDirections = new ArrayList<>(possibleRooms.keySet());
             }
@@ -396,14 +337,11 @@ public class RoomDetection {
                 directionCorners.put(direction, MapUtils.getPhysicalCornerPos(direction, currentPhysicalSegments));
             }
 
-            DungeonRooms.logger.debug("DungeonRooms: directionCorners " + directionCorners.entrySet());
-
             List<BlockPos> blocksChecked = new ArrayList<>();
             int doubleCheckedBlocks = 0;
 
             for (Map.Entry<BlockPos, Integer> entry : blocksToCheck.entrySet()) {
                 BlockPos blockPos = entry.getKey();
-                DungeonRooms.logger.debug("DungeonRooms: BlockPos being checked " + blockPos);
                 int combinedMatchingRooms = 0;
 
                 for (String direction : possibleDirections) {
@@ -424,31 +362,22 @@ public class RoomDetection {
                     //replace updatedPossibleRooms.get(direction) with the updated matchingRooms list
                     combinedMatchingRooms += matchingRooms.size();
                     updatedPossibleRooms.put(direction, matchingRooms);
-
-                    DungeonRooms.logger.debug("DungeonRooms: direction checked = " + direction + ", longID = " + idToCheck + ", relative = " + relative);
-                    DungeonRooms.logger.debug("DungeonRooms: updatedPossibleRooms size = " + updatedPossibleRooms.get(direction).size() + " for direction " + direction);
                 }
                 blocksChecked.add(blockPos);
 
                 if (combinedMatchingRooms == 0) {
-                    DungeonRooms.logger.warn("DungeonRooms: No rooms match the input blocks after checking " + blocksChecked.size() + " blocks, returning");
                     break;
                 }
                 if (combinedMatchingRooms == 1) {
                     //scan 10 more blocks after 1 room remaining to double check
                     if (doubleCheckedBlocks >= 10) {
-                        DungeonRooms.logger.debug("DungeonRooms: One room matches after checking " + blocksChecked.size() + " blocks");
                         break;
                     }
                     doubleCheckedBlocks++;
                 }
-
-                DungeonRooms.logger.debug("DungeonRooms: " + combinedMatchingRooms + " possible rooms after checking " + blocksChecked.size() + " blocks");
-
             }
 
             if (blocksChecked.size() == blocksToCheck.size()) { //only print for this condition bc other conditions break to here
-                DungeonRooms.logger.warn("DungeonRooms: Multiple rooms match after checking all " + blocksChecked.size() + " blocks");
             }
 
             blocksUsed.addAll(blocksChecked);
@@ -458,7 +387,6 @@ public class RoomDetection {
             blocksToCheck = new HashMap<>();
 
             long timeFinish = System.currentTimeMillis();
-            DungeonRooms.logger.debug("DungeonRooms: Time to check blocks using thread (in ms): " + (timeFinish - timeStart));
 
             return updatedPossibleRooms;
         });

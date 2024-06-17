@@ -21,7 +21,6 @@ package io.github.quantizr.dungeonrooms.handlers;
 import com.google.gson.JsonObject;
 import io.github.quantizr.dungeonrooms.DungeonRooms;
 import io.github.quantizr.dungeonrooms.dungeons.catacombs.RoomDetection;
-import io.github.quantizr.dungeonrooms.gui.LinkGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.event.ClickEvent;
@@ -42,21 +41,19 @@ public class OpenLink {
         EntityPlayerSP player = mc.thePlayer;
 
         if (RoomDetection.roomName.equals("undefined") || DungeonRooms.roomsJson.get(RoomDetection.roomName) == null) {
-            player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                    + "Dungeon Rooms: You do not appear to be in a detected Dungeon room right now."));
+            //Unknown room
             return;
         }
 
         JsonObject roomJson = DungeonRooms.roomsJson.get(RoomDetection.roomName).getAsJsonObject();
         if (roomJson.get("dsg").getAsString().equals("null") && roomJson.get("sbp") == null) {
-            player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                    + "Dungeon Rooms: There are no channels/images for this room."));
+            //No channels / images
             return;
         }
 
         switch (type) {
             case "gui":
-                mc.addScheduledTask(() -> mc.displayGuiScreen(new LinkGUI()));
+                //
                 break;
             case "dsg":
                 OpenLink.openDiscord("client");
@@ -68,8 +65,7 @@ public class OpenLink {
                     String sbpURL = "https://discord.gg/2UjaFqfPwJ";
                     ChatComponentText sbp = new ChatComponentText(EnumChatFormatting.YELLOW + "" + EnumChatFormatting.UNDERLINE + sbpURL);
                     sbp.setChatStyle(sbp.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, sbpURL)));
-                    player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                            + "Dungeon Rooms: You need the Skyblock Personalized (SBP) Mod for this feature, get it from ").appendSibling(sbp));
+                    //SBP
                 }
                 break;
         }
@@ -81,27 +77,14 @@ public class OpenLink {
         EntityPlayerSP player = mc.thePlayer;
 
         if (RoomDetection.roomName.equals("undefined") || DungeonRooms.roomsJson.get(RoomDetection.roomName) == null) {
-            player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                    + "Dungeon Rooms: You do not appear to be in a detected Dungeon room right now."));
+            //Not in a room
             return;
         }
 
         JsonObject roomJson = DungeonRooms.roomsJson.get(RoomDetection.roomName).getAsJsonObject();
         if (roomJson.get("dsg").getAsString().equals("null")) {
-            player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                    + "Dungeon Rooms: There is no DSG channel for this room."));
+            //No channels
             return;
-        }
-        try {
-            if (type.equals("client")){
-                player.addChatMessage(new ChatComponentText("Dungeon Rooms: Opening DSG Discord in Client..."));
-                Desktop.getDesktop().browse(new URI("discord://" + roomJson.get("dsg").getAsString()));
-            } else {
-                player.addChatMessage(new ChatComponentText("Dungeon Rooms: Opening DSG Discord in Browser..."));
-                Desktop.getDesktop().browse(new URI("https://discord.com" + roomJson.get("dsg").getAsString()));
-            }
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
         }
     }
 
@@ -110,15 +93,13 @@ public class OpenLink {
         EntityPlayerSP player = mc.thePlayer;
 
         if (RoomDetection.roomName.equals("undefined") || DungeonRooms.roomsJson.get(RoomDetection.roomName) == null) {
-            player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                    + "Dungeon Rooms: You do not appear to be in a detected Dungeon room right now."));
+            //Not in a room
             return;
         }
 
         JsonObject roomJson = DungeonRooms.roomsJson.get(RoomDetection.roomName).getAsJsonObject();
         if (roomJson.get("sbp") == null) {
-            player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED
-                    + "Dungeon Rooms: There are no SBP images for this room."));
+            //No SBP
             return;
         }
         String name = roomJson.get("sbp").getAsString();

@@ -33,11 +33,6 @@ import java.awt.*;
 public class WaypointUtils {
     private static final ResourceLocation beaconBeam = new ResourceLocation("textures/entity/beacon_beam.png");
 
-    /**
-     * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
-     * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE
-     * @author Moulberry
-     */
     public static void renderBeaconBeam(double x, double y, double z, int rgb, float alphaMultiplier, float partialTicks) {
         int height = 300;
         int bottomOffset = 0;
@@ -116,11 +111,6 @@ public class WaypointUtils {
         tessellator.draw();
     }
 
-    /**
-     * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
-     * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE
-     * @author Moulberry
-     */
     public static void drawFilledBoundingBox(AxisAlignedBB aabb, Color c, float alphaMultiplier) {
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
@@ -182,11 +172,6 @@ public class WaypointUtils {
         GlStateManager.disableBlend();
     }
 
-    /**
-     * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
-     * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE
-     * @author Moulberry
-     */
     public static void renderWaypointText(String str, BlockPos loc, float partialTicks) {
         GlStateManager.alphaFunc(516, 0.1F);
 
@@ -219,18 +204,14 @@ public class WaypointUtils {
         GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
 
-        drawNametag(EnumChatFormatting.YELLOW.toString()+Math.round(dist)+"m");
+        // Shows distance to waypoint
+        //drawNametag(EnumChatFormatting.YELLOW.toString()+Math.round(dist)+"m");
 
         GlStateManager.popMatrix();
 
         GlStateManager.disableLighting();
     }
 
-    /**
-     * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
-     * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE
-     * @author Moulberry
-     */
     public static void drawNametag(String str) {
         FontRenderer fontrenderer = Minecraft.getMinecraft().fontRendererObj;
         float f = 1.6F;
@@ -268,5 +249,4 @@ public class WaypointUtils {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
-
 }
