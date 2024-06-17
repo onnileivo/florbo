@@ -11,6 +11,7 @@ import dev.florbo.features.hypixel.farming.AutoBreak;
 import dev.florbo.features.hypixel.farming.ToggleAutoBreak;
 import dev.florbo.features.visuals.ChestEsp;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundCategory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -32,13 +33,14 @@ public class FlorboMod {
 
     public static FlorboConfig config;
 
+
+    xyz.yourboykyle.secretroutes.Main secretRoutes = new xyz.yourboykyle.secretroutes.Main();
     @Mod.Instance(MODID)
     public static FlorboMod INSTANCE;
 
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static String splashText;
     public static final String[] customSplashes = {"florbo client best mod !!!!", "ABONGUS", "what the sigma", "skibidi toilet w rizz", "ono ono ono ono ono ono", "sponsored by suupan kebab oy", "i shitted", "HOP ON HYPIXEL NO DOWNTIME", "local e-kittens in your area !!!"};
-
 
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {

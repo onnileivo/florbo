@@ -97,6 +97,18 @@ dependencies { // farm helper build gradle is the only one that works on my mach
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.0")
 }
 
+
+configurations.all {
+    resolutionStrategy {
+        force("org.apache.logging.log4j:log4j-core:2.8.1")
+        force("org.apache.logging.log4j:log4j-api:2.8.1")
+    }
+}
+
+
+
+
+
 // Tasks:
 
 tasks.withType(JavaCompile::class) {
