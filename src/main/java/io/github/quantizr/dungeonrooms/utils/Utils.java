@@ -169,25 +169,6 @@ public class Utils {
     }
 
     /**
-     * Used to set the log level of just this mod
-     */
-    public static void setLogLevel(Logger logger, Level level) {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration config = ctx.getConfiguration();
-
-        LoggerConfig loggerConfig = config.getLoggerConfig(logger.getName());
-        LoggerConfig specificConfig = loggerConfig;
-
-        if (!loggerConfig.getName().equals(logger.getName())) {
-            specificConfig = new LoggerConfig(logger.getName(), level, true);
-            specificConfig.setParent(loggerConfig);
-            config.addLogger(logger.getName(), specificConfig);
-        }
-        specificConfig.setLevel(level);
-        ctx.updateLoggers();
-    }
-
-    /**
      * Packs block info into a single 8 byte primitive long. Normally, first pair of bytes will be x coordinate, second
      * pair will be y coordinate, third pair will be z coordinate, and last pair will be block id and metadata.
      * @return primitive long containing block info

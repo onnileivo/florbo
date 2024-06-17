@@ -59,13 +59,14 @@ public class OnRecievePacket {
                     if(Main.routeRecording.recording && firstBlockBreakPacket) {
                         new OnBlockBreak().onBlockBreak(new BlockEvent.BreakEvent(world, pos, blockState, Minecraft.getMinecraft().thePlayer));
                     }
-                } else if(block == null) {
-                    // Block is null.
                 } else {
-                    // Block was placed
-                    if(Main.routeRecording.recording && firstBlockPlacePacket) {
-                        IBlockState placedAgainst = world.getBlockState(new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ()));
-                        new OnBlockPlace().onBlockPlace(new BlockEvent.PlaceEvent(new BlockSnapshot(world, pos, blockState), placedAgainst, Minecraft.getMinecraft().thePlayer));
+                    if (block != null) {
+                        // Block was placed
+
+                        if (Main.routeRecording.recording && firstBlockPlacePacket) {
+                            IBlockState placedAgainst = world.getBlockState(new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ()));
+                            new OnBlockPlace().onBlockPlace(new BlockEvent.PlaceEvent(new BlockSnapshot(world, pos, blockState), placedAgainst, Minecraft.getMinecraft().thePlayer));
+                        }
                     }
                 }
 

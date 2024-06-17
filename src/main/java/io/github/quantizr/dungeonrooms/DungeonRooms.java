@@ -59,6 +59,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.lwjgl.input.Keyboard;
 
 import java.io.*;
@@ -105,7 +108,11 @@ public class DungeonRooms
 
         //initialize logger
         logger = LogManager.getLogger(DungeonRooms.class);
-        Utils.setLogLevel(LogManager.getLogger(DungeonRooms.class), Level.INFO);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        Configuration config = ctx.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig(logger.getName());
+        loggerConfig.setLevel(Level.INFO);
+        ctx.updateLoggers(); // should work havent tested xd lets push to prod
     }
 
     @EventHandler

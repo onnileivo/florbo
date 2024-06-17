@@ -15,6 +15,9 @@ import xyz.yourboykyle.secretroutes.utils.Room;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LoadRoute extends CommandBase {
     @Override
@@ -26,6 +29,12 @@ public class LoadRoute extends CommandBase {
     public String getCommandUsage(ICommandSender sender) {
         return "/loadroute";
     }
+
+    @Override
+    public List<String> getCommandAliases() {
+        return Arrays.asList("skibiditoilet", "sigma", "lr");
+    }
+
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
