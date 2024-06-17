@@ -17,6 +17,8 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
+import static dev.florbo.util.RenderUtil.drawOutlinedBox;
+import static dev.florbo.util.RenderUtil.drawPathAsLines;
 import static org.lwjgl.opengl.GL11.*;
 
 public class MobEsp {
@@ -104,47 +106,5 @@ public class MobEsp {
 
     private boolean isSA(Entity e) {return e.getName().startsWith("Shadow Assasin") && e instanceof EntityOtherPlayerMP; } //Invis shadow assasin check
 
-    public static void drawOutlinedBox(AxisAlignedBB bb)
-    {
-        glBegin(GL_LINES);
-        {
 
-            glVertex3d(bb.minX, bb.minY, bb.minZ);
-            glVertex3d(bb.maxX, bb.minY, bb.minZ);
-
-            glVertex3d(bb.maxX, bb.minY, bb.minZ);
-            glVertex3d(bb.maxX, bb.minY, bb.maxZ);
-
-            glVertex3d(bb.maxX, bb.minY, bb.maxZ);
-            glVertex3d(bb.minX, bb.minY, bb.maxZ);
-
-            glVertex3d(bb.minX, bb.minY, bb.maxZ);
-            glVertex3d(bb.minX, bb.minY, bb.minZ);
-
-            glVertex3d(bb.minX, bb.minY, bb.minZ);
-            glVertex3d(bb.minX, bb.maxY, bb.minZ);
-
-            glVertex3d(bb.maxX, bb.minY, bb.minZ);
-            glVertex3d(bb.maxX, bb.maxY, bb.minZ);
-
-            glVertex3d(bb.maxX, bb.minY, bb.maxZ);
-            glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
-
-            glVertex3d(bb.minX, bb.minY, bb.maxZ);
-            glVertex3d(bb.minX, bb.maxY, bb.maxZ);
-
-            glVertex3d(bb.minX, bb.maxY, bb.minZ);
-            glVertex3d(bb.maxX, bb.maxY, bb.minZ);
-
-            glVertex3d(bb.maxX, bb.maxY, bb.minZ);
-            glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
-
-            glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
-            glVertex3d(bb.minX, bb.maxY, bb.maxZ);
-
-            glVertex3d(bb.minX, bb.maxY, bb.maxZ);
-            glVertex3d(bb.minX, bb.maxY, bb.minZ);
-        }
-        glEnd();
-    }
 }
